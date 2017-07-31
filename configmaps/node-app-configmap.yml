@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: node-app-config # This is not the name the configmap instance will receive
+    namespace: default
+data:
+    mongo.host: 192.168.99.100
+    mongo.user: mongo_user
+    mongo.password: mongo_password

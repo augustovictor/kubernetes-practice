@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1 # It has to be this
+kind: Deployment # Object name inside kubernetes
+metadata:
+    name: node-app # Used when we run kubectl run <name>
+spec:
+    replicas: 1
+    template: # Overall settings for the pod
+        metadata:
+            labels: # Values used to filter in kubernetes. E.g., anything that matches the label 'backend'
+                app: node-app
+                tear: backend
+                track: stable
+        spec:
+            containers:
+                -   name: node-app
+                    image: "node-app:1"
+                    ports:
+                        -   name: node-app-port # We can access by node-app only. No need to specify the port
+                            containerPort: 3000 # This should match the exposed port in docker-compose file
+                    env: # This should be added after node-app-config configmap has been created
+                        -   name: MONGO_USER
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: node-app-config # configmap name
+                                    key: mongo.user
+                        -   name: MONGO_PASSWORD
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: node-app-config
+                                    key: mongo.password
+                        -   name: MONGO_HOST
+                            valueFrom:
+                                configMapKeyRef:
+                                    name: node-app-config
+                                    key: mongo.host

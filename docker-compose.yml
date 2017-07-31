@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+    node-app:
+        build:
+            context: .
+            dockerfile: node-kubernetes.Dockerfile
+        environment:
+            - MONGODB_URI=mongodb://mongodb-kubernetesDB:27017/node-app-kubernetes
+        command: node_modules/.bin/nodemon --exec npm start
+        ports:
+            - '5000'
+        depends_on:
+            - mongodb-kubernetes
+    mongodb-kubernetes:
+        image: mongo:3
+        ports:
+            - '27017'
+        volumes:
+            - mongodb-kubernetesDB:/data/db
